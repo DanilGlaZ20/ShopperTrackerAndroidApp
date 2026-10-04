@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Покупки вместе</string>
+    <string name="input_text">Введите %1$s</string>
+    <string name="username">Имя пользователя</string>
+    <string name="phone_number">Номер телефона</string>
+    <string name="password">Пароль</string>
+    <string name="back_on_previous_activity">Back on previous activity</string>
+
+    <string name="register_topbar">Регистрация</string>
+    <string name="register_button">Зарегистрироваться</string>
+    <string name="login_topbar">Вход</string>
+    <string name="login_btn">Войти</string>
+    <string name="no_account">"Ещё нет аккаунта? "</string>
+    <string name="registration_tag">registration</string>
+    <string name="click_tag">click</string>
+    <string name="login_tag">login</string>
+    <string name="guest_tag">guest tag</string>
+    <string name="shopping_list">Список покупок</string>
+    <string name="what_is_buy">Что нужно купить?</string>
+    <string name="name_product">Название продукта</string>
+    <string name="description">Описание (необязательно)</string>
+    <string name="shop">Магазин (необязательно)</string>
+    <string name="save">Сохранить</string>
+    <string name="registration_illustration">Registration illustration</string>
+
+
+</resources>
