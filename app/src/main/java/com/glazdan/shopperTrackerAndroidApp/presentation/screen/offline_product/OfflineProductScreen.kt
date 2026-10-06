@@ -63,7 +63,7 @@ fun OfflineProductScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    title = if(state.isFormVisible)"Отмена" else "Добавить товар",
+                    title = if(state.isFormVisible) stringResource(R.string.cancel) else stringResource(R.string.add),
                     onClick = {viewModel.processCommand(ProductCommand.ToggleFormVisibility)}
 
                 )
@@ -98,7 +98,7 @@ fun OfflineProductScreen(
                             .size(500.dp)
                             .fillMaxWidth(),
                         painter = painterResource(id = R.drawable.im_create_offlineproduct_screen),
-                        contentDescription = stringResource(R.string.registration_illustration),
+                        contentDescription = stringResource(R.string.offline_product_illustration),
 
                         colorFilter = ColorFilter.tint(
                             color = MaterialTheme.colorScheme.background,

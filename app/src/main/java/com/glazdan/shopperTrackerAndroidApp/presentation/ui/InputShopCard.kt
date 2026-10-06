@@ -24,7 +24,7 @@ fun InputShopCard(
 	shopDescription: String,
 	badgeText: String,
 	queryText: String,
-	queryDescription: String,
+	queryDescription: String?,
 	queryBadge: String,
 	buttonText: String,
 	onTextChanged: (String) -> Unit,

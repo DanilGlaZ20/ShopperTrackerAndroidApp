@@ -1,10 +1,13 @@
 package com.glazdan.shopperTrackerAndroidApp.data.repository
 
 import android.util.Log
+import com.glazdan.shopperTrackerAndroidApp.data.remote.dto.CategoryDto
 import com.glazdan.shopperTrackerAndroidApp.data.remote.request.AddNewCategoryRequest
 import com.glazdan.shopperTrackerAndroidApp.data.remote.response.BaseResponse
+import com.glazdan.shopperTrackerAndroidApp.data.util.toModel
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Category
 import com.glazdan.shopperTrackerAndroidApp.domaim.repository.CategoryRepository
+import com.project.data.model.responses.AuthResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -29,7 +32,7 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 		categoryTitle: String,
 		categoryDescription: String?,
 		token: String
-	): Result<String> {
+	): Result<AuthResponse> {
 		return try {
 			Log.d(TAG, "Отправка запроса на добавление новой категории покупок: $categoryTitle")
 			var response = httpClient.post("/api/v1/create-category"){
@@ -42,13 +45,13 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 					)
 				)
 			}
-			val baseResponse = response.body<BaseResponse>()
+			val baseResponse = response.body<AuthResponse>()
 			if (baseResponse.success) {
 				Log.d(TAG, "Добавление категории успешно произведено! Токен получен.")
-				Result.success(baseResponse.message)
+				Result.success(baseResponse)
 			} else {
-				Log.w(TAG, "Сервер вернул success=false: ${baseResponse.message}")
-				Result.failure(Exception(baseResponse.message))
+				Log.w(TAG, "Сервер вернул success=false:")
+				Result.failure(Exception("Какая-то проблема"))
 			}
 		} catch (e: ClientRequestException) {
 			val statusCode = e.response.status
@@ -145,8 +148,9 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 				headers { append("Authorization", "Bearer $token")  }
 			}
 
-			val categories = response.body<List<Category>>()
-		   emit(categories)
+			val categories = response.body<List<CategoryDto>>()
+			val domainCategories = categories.map { it.toModel() }
+		   emit(domainCategories)
 	}.catch { e ->
 		if (e is ClientRequestException) {
 			val statusCode = e.response.status

@@ -13,7 +13,7 @@ class CategoryUseCase @Inject constructor(
 
 	suspend fun removeCategory(categoryId: Int, token: String) = categoryRepository.deleteCategory(categoryId = categoryId, token = token)
 
-	fun getAllCategories( token: String) = categoryRepository.getAllCategories( token = token)
+	fun getAllCategories(userId: Int, token: String) = categoryRepository.getAllCategories(userId = userId, token = token)
 	fun getCategoryById(categoryId: Int) = categoryRepository.getCategoryById(categoryId = categoryId)
 
 }

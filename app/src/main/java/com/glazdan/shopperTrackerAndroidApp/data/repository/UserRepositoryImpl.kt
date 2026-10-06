@@ -6,6 +6,7 @@ import com.glazdan.shopperTrackerAndroidApp.data.remote.request.RegisterRequest
 import com.glazdan.shopperTrackerAndroidApp.data.remote.response.BaseResponse
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.User
 import com.glazdan.shopperTrackerAndroidApp.domaim.repository.UserRepository
+import com.project.data.model.responses.AuthResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(private val httpClient: HttpClient) : UserRepository {
     private   val TAG = "UserRepositoryImpl"
 
-    override suspend fun registerUser(user: User): Result<String> {
+    override suspend fun registerUser(user: User): Result<AuthResponse> {
 
         return try {
             Log.d(TAG, "Отправка запроса на регистрацию для: ${user.username}")
@@ -27,22 +28,22 @@ class UserRepositoryImpl @Inject constructor(private val httpClient: HttpClient)
                 contentType(ContentType.Application.Json)
                 setBody(
                     RegisterRequest(
-                        username = user.username.uppercase(),
+                        username = user.username.trim(),
                         phone = user.phone,
-                        password = user.password.uppercase()
+                        password = user.password.trim()
                     )
                 )
             }
 
 
-            val baseResponse = response.body<BaseResponse>()
+            val baseResponse = response.body<AuthResponse>()
 
             if (baseResponse.success) {
                 Log.d(TAG, "Регистрация успешна! Токен получен.")
-                Result.success(baseResponse.message)
+                Result.success(baseResponse)
             } else {
-                Log.w(TAG, "Сервер вернул success=false: ${baseResponse.message}")
-                Result.failure(Exception(baseResponse.message))
+                Log.w(TAG, "Сервер вернул success=false")
+                Result.failure(Exception("Что-то не так"))
             }
 
         }
@@ -62,25 +63,25 @@ class UserRepositoryImpl @Inject constructor(private val httpClient: HttpClient)
             }
         }
 
-    override suspend fun loginUser(username: String, password: String ): Result<String> {
+    override suspend fun loginUser(username: String, password: String ): Result<AuthResponse> {
        return try {
            Log.d(TAG, "Отправка запроса на вход для: ${username}")
            val response = httpClient.post("/api/v1/login"){
                contentType(ContentType.Application.Json)
                setBody(
                    LoginRequest(
-                       username = username.uppercase(),
-                       password = password.uppercase()
+                       username = username.trim(),
+                       password = password.trim()
                    )
                )
            }
-           val baseResponse = response.body<BaseResponse>()
+           val baseResponse = response.body<AuthResponse>()
            if (baseResponse.success){
-               Log.d(TAG, "Вход успешно выполнен! Токен получен.")
-               Result.success(baseResponse.message)
+               Log.d(TAG, "Вход успешно выполнен! Токен  и Id получен.")
+               Result.success(baseResponse)
            }else {
-               Log.w(TAG, "Сервер вернул success=false: ${baseResponse.message}")
-               Result.failure(Exception(baseResponse.message))
+               Log.w(TAG, "Сервер вернул  success=false")
+               Result.failure(Exception("Неверное имя пользователя или пароль"))
            }
        } catch (e: ClientRequestException) {
            val statusCode = e.response.status

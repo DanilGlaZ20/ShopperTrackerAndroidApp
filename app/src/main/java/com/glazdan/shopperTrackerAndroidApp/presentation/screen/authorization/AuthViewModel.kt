@@ -51,9 +51,9 @@ class AuthViewModel @Inject constructor(
         _state.update { it.copy(isLoading = true, error = null) }
         val result = authUserUseCase.registerUser(User(id = 0, username = username, password = password, phone = phone))
             result.fold(
-                onSuccess = { jwtToken ->
-                    sessionManager.saveUserStatus("auth")
-                    _state.update { it.copy(isLoading = false, token = jwtToken) }
+                onSuccess = { auth ->
+                    sessionManager.saveSession(status = "auth", token = auth.token, userId = auth.userId)
+                    _state.update { it.copy(isLoading = false, token = auth.token) }
                 },
                 onFailure = { exception ->
                     _state.update { it.copy(isLoading = false, error = exception.message ?: "Произошла неизвестная ошибка") }
@@ -63,8 +63,8 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun login() = viewModelScope.launch(Dispatchers.IO){
-        val username = state.value.username
-        val password = state.value.password
+        val username = state.value.username.trim()
+        val password = state.value.password.trim()
 
         if (username.isBlank() || password.isBlank()){
            _state.update { it.copy(error = "Заполните все поля!") }
@@ -74,9 +74,9 @@ class AuthViewModel @Inject constructor(
 
         val result = authUserUseCase.loginUser(username = username, password = password)
         result.fold(
-            onSuccess = {jwtToken ->
-                sessionManager.saveUserStatus("auth")
-                _state.update { it.copy(isLoading = false, token = jwtToken) }
+            onSuccess = {auth ->
+                sessionManager.saveSession(status = "auth", token = auth.token, userId = auth.userId)
+                _state.update { it.copy(isLoading = false, token = auth.token) }
             },
             onFailure = {exception ->
                 _state.update { it.copy(isLoading = false, error = exception.message ?: "Произошла неизвестная ошибка") }
@@ -87,7 +87,7 @@ class AuthViewModel @Inject constructor(
 
     }
 
-    private fun saveGuest() = viewModelScope.launch(Dispatchers.IO) { sessionManager.saveUserStatus("guest") }
+    private fun saveGuest() = viewModelScope.launch(Dispatchers.IO) { sessionManager.saveSession(status = "guest", token = "", userId = 0) }
 
 
 }

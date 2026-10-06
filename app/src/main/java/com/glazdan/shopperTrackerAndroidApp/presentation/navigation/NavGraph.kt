@@ -81,7 +81,10 @@ fun NavGraph(
             )
         }
         composable(Screen.Category.route){
-            CategoryScreen()
+            CategoryScreen(
+                modifier = Modifier,
+                onBackClick = {navController.navigate(Screen.Start.route)}
+            )
         }
         composable(Screen.OfflineProduct.route){
 

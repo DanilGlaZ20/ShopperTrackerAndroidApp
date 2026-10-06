@@ -22,6 +22,12 @@
     <string name="shop">Магазин (необязательно)</string>
     <string name="save">Сохранить</string>
     <string name="registration_illustration">Registration illustration</string>
+    <string name="category_list">Список категорий</string>
+    <string name="categoryscreen_image">CategoryScreen image</string>
+    <string name="your_list">В вашем списке:</string>
+    <string name="cancel">Отмена</string>
+    <string name="add">Добавить товар</string>
+    <string name="offline_product_illustration">Offline product Illustration</string>
 
 
 </resources>

@@ -48,6 +48,7 @@ fun LoginScreen(
     }
 
     Scaffold{ innerPadding ->
+
         Column(modifier = modifier
             .fillMaxSize()
             .imePadding()
