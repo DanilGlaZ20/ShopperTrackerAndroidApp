@@ -74,13 +74,12 @@ fun CategoryScreen(
                     item{
                         InputShopCard(
                             modifier = Modifier.fillMaxWidth(),
-                            title = "Как будет  категория?",
-                            shopText = "Название категории",
+                            title = stringResource(R.string.what_is_category),
+                            shopText = stringResource(R.string.name_category),
                             badgeText = "",
                             shopDescription = stringResource(R.string.description),
                             queryText = creatingState.title ,
                             queryDescription = creatingState.description,
-                            queryBadge = "",
                             buttonText = stringResource(R.string.save),
                             onTextChanged = {viewModel.proccessCommand(CategoryCommand.InputTitle(it))},
                             onDescriptionChanged ={viewModel.proccessCommand(CategoryCommand.InputDescription(it))},
@@ -99,7 +98,7 @@ fun CategoryScreen(
                                 .size(500.dp)
                                 .fillMaxWidth(),
                             painter = painterResource(id = R.drawable.im_category_screen),
-                            contentDescription = stringResource(R.string.categoryscreen_image),
+                            contentDescription = stringResource(R.string.category_screen_image),
 
                             colorFilter = ColorFilter.tint(
                                 color = MaterialTheme.colorScheme.background,
@@ -127,11 +126,8 @@ fun CategoryScreen(
                     OutputShopCard (
                         title = category.categoryTitle,
                         description = category.categoryDescription,
-                        badgeText = null,
                         isBought = false,
-                        onCheckedClick = {
-                            viewModel.proccessCommand(CategoryCommand.RemoveCategory(category))
-                        },
+                        hasBorder = true,
                         onClick = { viewModel.proccessCommand(CategoryCommand.EditCategory(category)) }
                     )
                 }

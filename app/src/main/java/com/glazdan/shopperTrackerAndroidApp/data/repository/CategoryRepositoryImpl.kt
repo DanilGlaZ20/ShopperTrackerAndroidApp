@@ -72,7 +72,7 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 	override suspend fun editCategory(
 		category: Category,
 		token: String
-	) : Result<String> {
+	) : Result<AuthResponse> {
 		return try {
 			Log.d(TAG, "Отправка запроса на изменение категории покупок: ${category.categoryTitle}")
 			var response = httpClient.put("/api/v1/edit-category") {
@@ -86,13 +86,13 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 					)
 				)
 			}
-			val baseResponse = response.body<BaseResponse>()
+			val baseResponse = response.body<AuthResponse>()
 			if (baseResponse.success) {
 				Log.d(TAG, "Изменение категории успешно произведено! Токен получен.")
-				Result.success(baseResponse.message)
+				Result.success(baseResponse)
 			} else {
-				Log.w(TAG, "Сервер вернул success=false: ${baseResponse.message}")
-				Result.failure(Exception(baseResponse.message))
+				Log.w(TAG, "Сервер вернул success=false")
+				Result.failure(Exception("Какая-то проблема"))
 			}
 		} catch (e: ClientRequestException) {
 			val statusCode = e.response.status

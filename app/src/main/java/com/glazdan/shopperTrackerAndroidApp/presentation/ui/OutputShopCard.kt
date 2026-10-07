@@ -1,5 +1,6 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,7 @@ fun OutputShopCard(
 	description: String? = null,
 	badgeText: String? = null,
 	isBought: Boolean = false,
+	hasBorder: Boolean = false,
 	onCheckedClick: ((Boolean) -> Unit)? = null,
 	onClick: (() -> Unit)? = null
 
@@ -41,7 +44,11 @@ fun OutputShopCard(
 		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 		onClick = { onClick?.invoke() },
 
-		enabled = onClick != null
+		enabled = onClick != null,
+		border = if (hasBorder) BorderStroke(
+			width = 1.5.dp,
+			color = MaterialTheme.colorScheme.primary
+		) else null
 	) {
 		Column(
 			modifier = Modifier
@@ -65,7 +72,7 @@ fun OutputShopCard(
 					modifier = Modifier.weight(1f),
 					text = title,
 					fontSize = 18.sp,
-					textAlign = TextAlign.Center,
+					textAlign = TextAlign.Start,
 					maxLines = 2,
 					overflow = TextOverflow.Ellipsis,
 					fontWeight = FontWeight.Bold,

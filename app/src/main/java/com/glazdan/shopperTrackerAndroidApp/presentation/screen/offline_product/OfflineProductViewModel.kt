@@ -27,7 +27,7 @@ class OfflineProductViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             offlineProductUseCase.getAllProducts().collect { list ->
-                _state.update { it.copy(productsList = list) }
+                _state.update { it.copy(productsList = list, isLoading = false) }
             }
         }
     }
@@ -182,6 +182,7 @@ sealed interface OfflineProductState{
         val shop: String = "",
         val isBought: Boolean = false,
         val isFormVisible: Boolean = false,
+        val isLoading: Boolean = true,
         val productsList: List<OfflineProduct> = emptyList()
     ): OfflineProductState
 

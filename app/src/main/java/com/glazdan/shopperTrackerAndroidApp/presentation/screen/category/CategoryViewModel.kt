@@ -1,6 +1,5 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.screen.category
 
-import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glazdan.shopperTrackerAndroidApp.data.manager.SessionManager
@@ -25,7 +24,6 @@ class CategoryViewModel @Inject constructor(
 	val state = _state.asStateFlow()
 
 	private var currentToken: String? = null
-	private var currentUserId: Int = 0
 
 	init {
 		observeUserSession()
@@ -83,7 +81,7 @@ class CategoryViewModel @Inject constructor(
 					_state.update { CategoryState.Unauthorized }
 				} else {
 					currentToken = token
-					currentUserId = id
+					_state.update { prev -> if (prev is CategoryState.CreatingCategory) prev.copy(userId = id) else prev }
 
 					loadCategories(token = token, userId = id)
 				}
@@ -121,7 +119,7 @@ class CategoryViewModel @Inject constructor(
 			_state.update { CategoryState.Unauthorized }
 			return
 		}
-
+		val userId = currentState.userId ?: 0
 		_state.update { prev -> if (prev is CategoryState.CreatingCategory) prev.copy(isLoading = true) else prev }
 
 		viewModelScope.launch(Dispatchers.IO) {
@@ -129,7 +127,7 @@ class CategoryViewModel @Inject constructor(
 				categoryUseCase.updateCategory(
 					category = Category(
 						categoryId = currentState.editedId.toInt(),
-						userId = currentUserId,
+						userId = userId,
 						categoryTitle = currentTitle.trim(),
 						categoryDescription = currentState.description.trim().ifBlank { null }
 					),
@@ -145,15 +143,21 @@ class CategoryViewModel @Inject constructor(
 
 			result.fold(
 				onSuccess = {
-					_state.update {
-						CategoryState.CreatingCategory(
-							title = "",
-							description = "",
-							isFormVisible = false,
-							categoriesList = currentState.categoriesList,
-							editedId = null
-						)
+						_state.update { previous ->
+							if ( previous is CategoryState.CreatingCategory) {
+								previous.copy (
+									title = "",
+									description = "",
+									isFormVisible = false,
+									categoriesList = emptyList(),
+									editedId = null,
+									isLoading = true
+								)
+						} else previous
 					}
+					loadCategories(token = token, userId = userId)
+
+
 				},
 				onFailure = { exception ->
 					_state.update { previous ->

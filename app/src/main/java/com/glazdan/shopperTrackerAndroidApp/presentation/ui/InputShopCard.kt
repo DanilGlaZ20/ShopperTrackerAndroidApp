@@ -22,16 +22,15 @@ fun InputShopCard(
 	title: String,
 	shopText: String,
 	shopDescription: String,
-	badgeText: String,
-	queryText: String,
+	badgeText: String? = null,
+	queryText: String? = null,
 	queryDescription: String?,
-	queryBadge: String,
+	queryBadge: String? = null,
 	buttonText: String,
 	onTextChanged: (String) -> Unit,
 	onDescriptionChanged: (String) -> Unit,
 	onShopChanged: (String) -> Unit,
-	onAddItem: () -> Unit
-
+	onAddItem: () -> Unit,
 ){
 	Card(
 		modifier = modifier,
@@ -60,12 +59,14 @@ fun InputShopCard(
 				query = queryDescription,
 				onQueryChanged = onDescriptionChanged
 			)
+			if (badgeText != null && queryBadge != null && onShopChanged != null){
+				InputContent(
+					text = badgeText,
+					query = queryBadge,
+					onQueryChanged = onShopChanged
+				)
+			}
 
-			InputContent(
-				text = badgeText,
-				query = queryBadge,
-				onQueryChanged = onShopChanged
-			)
 
 			SampleButton(
 				modifier = modifier.fillMaxWidth().height(48.dp),

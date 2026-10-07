@@ -90,7 +90,7 @@ fun OfflineProductScreen(
                 }
             }
 
-            if(state.productsList.isEmpty() && !state.isFormVisible)
+            if(state.isLoading == false && state.productsList.isEmpty() && !state.isFormVisible)
             {
                 item {
                     Image(
@@ -128,6 +128,7 @@ fun OfflineProductScreen(
                     description = product.description,
                     badgeText = product.shop,
                     isBought = product.isBought,
+                    hasBorder = false,
                     onCheckedClick = { isChecked ->
                         viewModel.processCommand(ProductCommand.RemoveCardProduct(product))
                     },
