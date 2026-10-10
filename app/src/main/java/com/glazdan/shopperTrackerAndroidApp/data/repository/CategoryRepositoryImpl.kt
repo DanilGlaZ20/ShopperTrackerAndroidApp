@@ -116,13 +116,13 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 			val response = httpClient.delete ("/api/v1/delete-category?id=$categoryId" ){
 				headers { append("Authorization", "Bearer $token")  }
 			}
-			val category = response.body<BaseResponse>()
+			val category = response.body<AuthResponse>()
 			if (category.success) {
 				Log.d(TAG, "Удаление категории успешно произведено! Токен получен.")
-				Result.success(category.message)
+				Result.success(category)
 			} else {
-				Log.w(TAG, "Сервер вернул success=false: ${category.message}")
-				Result.failure(Exception(category.message))
+				Log.w(TAG, "Сервер вернул success=false")
+				Result.failure(Exception("Какая-то проблема"))
 			}
 		} catch (e: ClientRequestException) {
 			val statusCode = e.response.status

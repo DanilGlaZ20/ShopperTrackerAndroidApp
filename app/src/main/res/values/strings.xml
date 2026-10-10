@@ -35,6 +35,7 @@
     <string name="your_list">В вашем списке:</string>
     <string name="what_is_category">Какая будет  категория?</string>
     <string name="name_category">Название категории</string>
+    <string name="delete_element">Удалить элемент</string>
 
 
 </resources>

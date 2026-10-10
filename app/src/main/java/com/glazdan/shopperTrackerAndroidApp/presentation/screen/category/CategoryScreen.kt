@@ -111,7 +111,7 @@ fun CategoryScreen(
 
                 }
 
-                if (creatingState?.categoriesList?.isNotEmpty() == false ) {
+                if (creatingState?.categoriesList?.isNotEmpty() == true ) {
                     item {
                         Text(
                             text = stringResource(R.string.your_list),
@@ -128,7 +128,10 @@ fun CategoryScreen(
                         description = category.categoryDescription,
                         isBought = false,
                         hasBorder = true,
-                        onClick = { viewModel.proccessCommand(CategoryCommand.EditCategory(category)) }
+                        onCheckedClick = null,
+                        onClick = { viewModel.proccessCommand(CategoryCommand.EditCategory(category)) },
+                        onRemoveClick = {viewModel.proccessCommand(CategoryCommand.RemoveCategory(category))}
+
                     )
                 }
 

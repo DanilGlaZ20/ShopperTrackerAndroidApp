@@ -6,5 +6,5 @@ data class Category(
 	val categoryTitle: String,
 	val categoryDescription: String?,
 	val userId: Int,
-
+	val  needCategory: Boolean = true,
 	)

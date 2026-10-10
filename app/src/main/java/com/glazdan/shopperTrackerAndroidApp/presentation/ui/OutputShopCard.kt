@@ -1,30 +1,37 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.glazdan.shopperTrackerAndroidApp.R
 
 @Composable
 fun OutputShopCard(
@@ -35,6 +42,7 @@ fun OutputShopCard(
 	isBought: Boolean = false,
 	hasBorder: Boolean = false,
 	onCheckedClick: ((Boolean) -> Unit)? = null,
+	onRemoveClick: (() -> Unit)? = null,
 	onClick: (() -> Unit)? = null
 
 ) {
@@ -63,7 +71,8 @@ fun OutputShopCard(
 					Checkbox(
 						modifier = Modifier.padding(end = 8.dp),
 						checked = isBought,
-						onCheckedChange = onCheckedClick
+						onCheckedChange = { onCheckedClick.invoke(it) }
+
 
 					)
 				}
@@ -80,8 +89,25 @@ fun OutputShopCard(
 					color = if (isBought) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
 
 				)
-				if (onCheckedClick != null) {
+				/*if (onCheckedClick != null) {
 					Spacer(modifier = Modifier.width(48.dp))
+				}*/
+				if (onRemoveClick != null) {
+					val interactionSource = remember { MutableInteractionSource() }
+					val isPressed by interactionSource.collectIsPressedAsState()
+					IconButton(
+						onClick = onRemoveClick,
+						modifier = Modifier.size(36.dp),
+						interactionSource = interactionSource
+					) {
+						Icon(
+							imageVector = Icons.Default.Delete,
+							contentDescription = stringResource(R.string.delete_element),
+							tint = if (isPressed)  MaterialTheme.colorScheme.primary
+							else MaterialTheme.colorScheme.onSurfaceVariant
+
+						)
+					}
 				}
 			}
 
@@ -112,16 +138,3 @@ fun OutputShopCard(
 	}
 }
 
-
-@Preview
-@Composable
-fun OutputShopCardPreview(
-	modifier: Modifier = Modifier.fillMaxSize()
-){
-	OutputShopCard(
-		modifier = modifier.fillMaxSize(),
-		title = "Картошка",
-		description = "Белая молодая небольшая для запекания(желательно бэби)",
-		badgeText = "Лента"
-	)
-}

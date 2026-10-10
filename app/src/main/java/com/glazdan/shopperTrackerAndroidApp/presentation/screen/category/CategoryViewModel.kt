@@ -1,12 +1,17 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.screen.category
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glazdan.shopperTrackerAndroidApp.data.manager.SessionManager
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Category
+import com.glazdan.shopperTrackerAndroidApp.domaim.entity.OfflineProduct
 import com.glazdan.shopperTrackerAndroidApp.domaim.usecase.CategoryUseCase
+import com.glazdan.shopperTrackerAndroidApp.presentation.utils.cancelDelation
+import com.glazdan.shopperTrackerAndroidApp.presentation.utils.deletionJobs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -14,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.set
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
@@ -33,7 +39,7 @@ class CategoryViewModel @Inject constructor(
 			is CategoryCommand.EditCategory ->  editCategory(category = command.category)
 			is CategoryCommand.InputDescription -> inputDescription(newDescription = command.description)
 			is CategoryCommand.InputTitle -> inputTitle(newTitle = command.title)
-			is CategoryCommand.RemoveCategory -> TODO()
+			is CategoryCommand.RemoveCategory -> deletionTimer(category = command.category)
 			CategoryCommand.Save -> saveCategory()
 			CategoryCommand.ToggleFormVisibility -> createCategoryCard()
 		}
@@ -69,6 +75,51 @@ class CategoryViewModel @Inject constructor(
 				description = ""
 			)
 		} else previousState
+
+	}
+	private fun deletionTimer(category: Category) {
+		val token = currentToken?: return
+		val categoryId = category.categoryId?.toLong() ?: return
+
+		cancelDelation(categoryId)
+
+		_state.update { previous ->
+			if(previous is CategoryState.CreatingCategory)previous.copy(categoriesList = previous.categoriesList.filter {it.categoryId != category.categoryId})
+			else previous
+		}
+
+		val job = viewModelScope.launch(Dispatchers.IO) {
+			try {
+				delay(3*1000)
+				categoryUseCase.removeCategory(categoryId = category.categoryId, token = token )
+				deletionJobs.remove(categoryId)
+			} catch (e: Exception) {
+				Log.d("TIMER", "Удаление категории $categoryId отменено")
+			}
+
+
+		}
+
+		deletionJobs[categoryId] = job
+	}
+
+	private fun deleteCategoryCard(category: Category){
+		val token = currentToken?: return
+		val categoryId = category.categoryId?.toLong() ?: return
+		if(!category.needCategory){
+			cancelDelation(id = categoryId)
+			viewModelScope.launch(Dispatchers.IO) {
+					categoryUseCase.updateCategory(category = category, token = token)
+					val currnetState = _state.value as? CategoryState.CreatingCategory
+					loadCategories(token = token, userId = currnetState?.userId ?: 0)
+			}
+		}else{
+			viewModelScope.launch(Dispatchers.IO){
+				categoryUseCase.removeCategory(categoryId = category.categoryId, token = token)
+			}
+
+		}
+
 
 	}
 
@@ -193,7 +244,8 @@ sealed interface CategoryState{
 		val error: String? = null,
 		val categoriesList: List<Category> = emptyList(),
 		val isUnauthorized: Boolean = false,
-		val isLoading: Boolean = true
+		val isLoading: Boolean = true,
+		val needCategory: Boolean = true,
 	): CategoryState
 
 	data object Unauthorized : CategoryState

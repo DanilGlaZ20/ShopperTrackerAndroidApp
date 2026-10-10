@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.OfflineProduct
 import com.glazdan.shopperTrackerAndroidApp.domaim.usecase.OfflineProductUseCase
+import com.glazdan.shopperTrackerAndroidApp.presentation.utils.cancelDelation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
+import com.glazdan.shopperTrackerAndroidApp.presentation.utils.deletionJobs
 import javax.inject.Inject
 
 
@@ -22,7 +24,7 @@ class OfflineProductViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(OfflineProductState.CreatingProduct())
     val state = _state.asStateFlow()
-    private val deletionJobs = ConcurrentHashMap<Long, Job>() //Хранилище таймеров
+    //private val deletionJobs = ConcurrentHashMap<Long, Job>() //Хранилище таймеров
 
     init {
         viewModelScope.launch {
@@ -113,11 +115,13 @@ class OfflineProductViewModel @Inject constructor(
     }
 
     private fun deletionTimer(offlineProduct: OfflineProduct) {
+
         deletionJobs[offlineProduct.id]?.cancel()
 
         val job = viewModelScope.launch(Dispatchers.IO) {
             offlineProductUseCase.editProduct(offlineProduct.copy(isBought = true))
-            delay(3 * 60 * 1000)//отложенное удаление 3 минуты
+            delay(//3 * 60 *
+                    1000)//отложенное удаление 3 минуты
             offlineProductUseCase.deleteProduct(offlineProduct.id)
             deletionJobs.remove(offlineProduct.id)
         }
@@ -137,14 +141,14 @@ class OfflineProductViewModel @Inject constructor(
 
     }
 
-    fun cancelDelation(offlineProductId: Long) {
+    /*fun cancelDelation(offlineProductId: Long) {
         deletionJobs[offlineProductId]?.cancel()
         deletionJobs.remove(offlineProductId)
-    }
+    }*/
 
     fun changeStateProduct(offlineProduct: OfflineProduct){
         if (offlineProduct.isBought) {
-            cancelDelation(offlineProductId = offlineProduct.id)
+            cancelDelation(id = offlineProduct.id)
             viewModelScope.launch(Dispatchers.IO) {
                 offlineProductUseCase.editProduct(offlineProduct.copy(isBought = false))
             }
