@@ -35,7 +35,7 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 	): Result<AuthResponse> {
 		return try {
 			Log.d(TAG, "Отправка запроса на добавление новой категории покупок: $categoryTitle")
-			var response = httpClient.post("/api/v1/create-category"){
+			val response = httpClient.post("/api/v1/create-category"){
 				contentType(ContentType.Application.Json)
 				headers { append("Authorization", "Bearer $token")  }
 				setBody(
@@ -75,7 +75,7 @@ class CategoryRepositoryImpl @Inject constructor(private val httpClient: HttpCli
 	) : Result<AuthResponse> {
 		return try {
 			Log.d(TAG, "Отправка запроса на изменение категории покупок: ${category.categoryTitle}")
-			var response = httpClient.put("/api/v1/edit-category") {
+			val response = httpClient.put("/api/v1/edit-category") {
 				contentType(ContentType.Application.Json)
 				headers { append("Authorization", "Bearer $token") }
 				setBody(

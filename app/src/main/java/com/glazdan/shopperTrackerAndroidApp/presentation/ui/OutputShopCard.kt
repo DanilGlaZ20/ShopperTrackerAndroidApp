@@ -1,6 +1,7 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.ui
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Column
@@ -43,15 +44,19 @@ fun OutputShopCard(
 	hasBorder: Boolean = false,
 	onCheckedClick: ((Boolean) -> Unit)? = null,
 	onRemoveClick: (() -> Unit)? = null,
-	onClick: (() -> Unit)? = null
+	onClick: (() -> Unit)? = null,
+	onLongClick: (() -> Unit)? = null
 
 ) {
 	Card(
 		modifier = modifier.fillMaxWidth(),
+//			.combinedClickable(
+//				onClick = {onClick?.invoke()},
+//				onLongClick = {onLongClick?.invoke()}
+//			),
 		elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
 		colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
 		onClick = { onClick?.invoke() },
-
 		enabled = onClick != null,
 		border = if (hasBorder) BorderStroke(
 			width = 1.5.dp,
@@ -62,6 +67,11 @@ fun OutputShopCard(
 			modifier = Modifier
 				.fillMaxWidth()
 				.padding(vertical = 12.dp, horizontal = 16.dp)
+				.combinedClickable(
+			onClick = {
+				onClick?.invoke()},
+				onLongClick = {onLongClick?.invoke()}
+			),
 		) {
 			Row(
 				modifier = Modifier.fillMaxWidth(),

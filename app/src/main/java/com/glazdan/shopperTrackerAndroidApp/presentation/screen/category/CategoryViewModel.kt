@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glazdan.shopperTrackerAndroidApp.data.manager.SessionManager
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Category
-import com.glazdan.shopperTrackerAndroidApp.domaim.entity.OfflineProduct
 import com.glazdan.shopperTrackerAndroidApp.domaim.usecase.CategoryUseCase
 import com.glazdan.shopperTrackerAndroidApp.presentation.utils.cancelDelation
 import com.glazdan.shopperTrackerAndroidApp.presentation.utils.deletionJobs
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.set
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
@@ -101,26 +99,6 @@ class CategoryViewModel @Inject constructor(
 		}
 
 		deletionJobs[categoryId] = job
-	}
-
-	private fun deleteCategoryCard(category: Category){
-		val token = currentToken?: return
-		val categoryId = category.categoryId?.toLong() ?: return
-		if(!category.needCategory){
-			cancelDelation(id = categoryId)
-			viewModelScope.launch(Dispatchers.IO) {
-					categoryUseCase.updateCategory(category = category, token = token)
-					val currnetState = _state.value as? CategoryState.CreatingCategory
-					loadCategories(token = token, userId = currnetState?.userId ?: 0)
-			}
-		}else{
-			viewModelScope.launch(Dispatchers.IO){
-				categoryUseCase.removeCategory(categoryId = category.categoryId, token = token)
-			}
-
-		}
-
-
 	}
 
 	private fun observeUserSession() {

@@ -1,5 +1,6 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.navigation
 
+import androidx.compose.foundation.magnifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import com.glazdan.shopperTrackerAndroidApp.presentation.screen.start.LoadingScr
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.RegistrationScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.category.CategoryScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.offline_product.OfflineProductScreen
+import com.glazdan.shopperTrackerAndroidApp.presentation.screen.product.ProductScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.start.StartScreen
 
 @Composable
@@ -83,7 +85,8 @@ fun NavGraph(
         composable(Screen.Category.route){
             CategoryScreen(
                 modifier = Modifier,
-                onBackClick = {navController.navigate(Screen.Start.route)}
+                onBackClick = {navController.navigate(Screen.Start.route)},
+                onLongClick = {navController.navigate(Screen.Product.route)}
             )
         }
         composable(Screen.OfflineProduct.route){
@@ -93,6 +96,12 @@ fun NavGraph(
                 onBackClick = {navController.navigate(Screen.Start.route)}
             )
 
+        }
+
+        composable(Screen.Product.route){
+            ProductScreen(
+                modifier = Modifier
+            )
         }
 
 
@@ -107,4 +116,6 @@ sealed class Screen(val route: String){
     data object OfflineProduct: Screen("offline_products")
 
     data object Category: Screen("category")
+
+    data object Product: Screen("product")
 }
