@@ -87,7 +87,8 @@ class AuthViewModel @Inject constructor(
 
     }
 
-    private fun saveGuest() = viewModelScope.launch(Dispatchers.IO) { sessionManager.saveSession(status = "guest", token = "", userId = 0) }
+    private fun saveGuest() = viewModelScope.launch(Dispatchers.IO) { sessionManager.saveSession(
+        status = "guest", token = "", userId = 0) }
 
 
 }

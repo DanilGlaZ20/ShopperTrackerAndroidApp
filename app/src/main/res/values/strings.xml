@@ -36,6 +36,7 @@
     <string name="what_is_category">Какая будет  категория?</string>
     <string name="name_category">Название категории</string>
     <string name="delete_element">Удалить элемент</string>
+    <string name="add_user_in_category">Add user in category</string>
 
 
 </resources>

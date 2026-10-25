@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.glazdan.shopperTrackerAndroidApp.R
+import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.AuthCommand
+import com.glazdan.shopperTrackerAndroidApp.presentation.screen.category.CategoryState
+import com.glazdan.shopperTrackerAndroidApp.presentation.ui.FindUser
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.InputShopCard
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.OutputShopCard
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.SampleButton
@@ -37,6 +41,7 @@ import com.glazdan.shopperTrackerAndroidApp.presentation.ui.SampleTopBar
 fun ProductScreen(
 	modifier: Modifier = Modifier,
 	onBackClick: () -> Unit,
+	onAddUserClick: () -> Unit,
 	viewModel: ProductViewModel = hiltViewModel()
 ) {
 
@@ -55,11 +60,16 @@ fun ProductScreen(
 			item{
 				SampleTopBar(
 					modifier = Modifier.fillMaxWidth(),
-					text = stringResource(R.string.shopping_list),
-					onBackClick = onBackClick
+					text =  stringResource(R.string.shopping_list),
+						//stringResource(R.string.shopping_list),
+					onBackClick = onBackClick,
+					onAddUserClick = {viewModel.proccessCommand(ProductCommand.ToggleInviteDialog(isVisible = true))}
 				)
 
+
+
 			}
+
 			item {
 				SampleButton(
 					modifier = modifier
@@ -99,7 +109,7 @@ fun ProductScreen(
 						modifier = Modifier
 							.size(500.dp)
 							.fillMaxWidth(),
-						painter = painterResource(id = R.drawable.im_create_offlineproduct_screen),
+						painter = painterResource(id = R.drawable.im_product_screen),
 						contentDescription = stringResource(R.string.offline_product_illustration),
 
 						colorFilter = ColorFilter.tint(
@@ -142,7 +152,20 @@ fun ProductScreen(
 
 
 		}
+		if (creatingState?.isInviteDialogVisible == true) {
+			FindUser(
+				onDismissRequest = { viewModel.proccessCommand(ProductCommand.ToggleInviteDialog(isVisible = false)) },
+				onConfirmation = { viewModel.proccessCommand(ProductCommand.InviteUser) },
+				dialogText = "Добавить пользователя в катеорию",
+				dialogTitle = "Добавление пользователя",
+				textContent = "номер пользователя",
+				queryContent = creatingState.phone,
+				onContentChanged = {viewModel.proccessCommand(ProductCommand.InputPhone(it))},
+				successText = creatingState.isSuccess,
+				errorText = creatingState.isError
 
+			)
+		}
 
 	}
 }

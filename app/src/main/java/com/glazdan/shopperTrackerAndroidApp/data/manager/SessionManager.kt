@@ -1,7 +1,6 @@
 package com.glazdan.shopperTrackerAndroidApp.data.manager
 
 import android.content.Context
-import android.media.Session2Token
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -22,17 +21,19 @@ class SessionManager @Inject constructor(
 		val JWT_TOKEN_KEY = stringPreferencesKey("jwt_token")
 		val USER_STATUS_KEY = stringPreferencesKey("user_status")
 		val USER_ID_KEY = intPreferencesKey("user_id")
+		val CATEGORY_ID_KEY = intPreferencesKey("category_id")
 	}
 
 	val jwtToken: Flow<String?> = context.dataStore.data.map { it[JWT_TOKEN_KEY] }
 	val userStatus: Flow<String> = context.dataStore.data.map { it[USER_STATUS_KEY] ?: "" }
 	val userId: Flow<Int> = context.dataStore.data.map { it[USER_ID_KEY] ?: 0 }
+	val categoryId: Flow<Int> = context.dataStore.data.map { it[CATEGORY_ID_KEY] ?: 0 }
 
-	suspend fun saveSession(token: String, status: String, userId: Int) {
+	suspend fun saveSession(token: String, status: String, userId: Int?) {
 		context.dataStore.edit {
 			it[JWT_TOKEN_KEY] = token
 			it[USER_STATUS_KEY] = status
-			it[USER_ID_KEY] = userId
+			it[USER_ID_KEY] = userId ?: 0
 		}
 	}
 

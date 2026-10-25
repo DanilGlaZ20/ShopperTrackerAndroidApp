@@ -34,7 +34,8 @@ fun ProductDto.toModel(): Product{
         productId = productId,
         categoryId = categoryId,
         productTitle = productTitle,
-        productDescription = productDescription
+        productDescription = productDescription,
+        productShop = productShop
     )
 }
 fun OfflineProduct.toDbModel(): OfflineProductDbModel{

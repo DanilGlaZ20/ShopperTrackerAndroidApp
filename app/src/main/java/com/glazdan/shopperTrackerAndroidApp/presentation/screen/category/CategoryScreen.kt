@@ -35,7 +35,7 @@ import com.glazdan.shopperTrackerAndroidApp.presentation.ui.SampleTopBar
 fun CategoryScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    onLongClick: () -> Unit,
+    onLongClick: (Int) -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
     ) {
 
@@ -130,7 +130,10 @@ fun CategoryScreen(
                         isBought = false,
                         hasBorder = true,
                         onCheckedClick = null,
-                        onLongClick = onLongClick,
+                        onLongClick = {
+                            val categoryId = category.categoryId ?: 0
+                            onLongClick(categoryId)
+                        },
                         onClick = { viewModel.proccessCommand(CategoryCommand.EditCategory(category)) },
                         onRemoveClick = {viewModel.proccessCommand(CategoryCommand.RemoveCategory(category))}
 

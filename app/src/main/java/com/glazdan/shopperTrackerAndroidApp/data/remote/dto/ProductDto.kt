@@ -17,6 +17,9 @@ data class ProductDto(
 	@SerialName("product_description")
 	val productDescription: String? = null,
 
+	@SerialName("product_shop")
+	val productShop: String? = null,
+
 	@SerialName("is_buy")
 	val isBought: Boolean = false ,
 )

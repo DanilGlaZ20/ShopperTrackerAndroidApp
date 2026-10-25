@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,7 +26,8 @@ import com.glazdan.shopperTrackerAndroidApp.R
 fun SampleTopBar(
     modifier: Modifier = Modifier,
     text: String,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onAddUserClick: (() -> Unit)? = null
 ){
     CenterAlignedTopAppBar(
         modifier = modifier,
@@ -40,7 +42,8 @@ fun SampleTopBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.primary
+            navigationIconContentColor = MaterialTheme.colorScheme.primary,
+            actionIconContentColor = MaterialTheme.colorScheme.primary,
         ),
         navigationIcon =  {
             Icon(
@@ -53,6 +56,18 @@ fun SampleTopBar(
             )
         },
 
-        )
+        actions = {
+            if (onAddUserClick != null) {
+                Icon(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { onAddUserClick?.invoke() }
+                        .padding(8.dp),
+                    imageVector = Icons.Filled.PersonAdd,
+                    contentDescription = "Add user to category"
+                )
+            }
+        }
+    )
 
 }
