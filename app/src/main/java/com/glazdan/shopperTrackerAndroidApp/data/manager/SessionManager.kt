@@ -37,8 +37,6 @@ class SessionManager @Inject constructor(
 		}
 	}
 
-
-	//suspend fun saveUserStatus(status: String){ context.dataStore.edit { it[USER_STATUS_KEY] = status } }
 	suspend fun clearSession(){
 		context.dataStore.edit { it.clear() }
 

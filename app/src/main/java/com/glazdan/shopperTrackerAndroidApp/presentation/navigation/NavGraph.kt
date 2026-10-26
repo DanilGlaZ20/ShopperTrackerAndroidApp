@@ -1,6 +1,5 @@
 package com.glazdan.shopperTrackerAndroidApp.presentation.navigation
 
-import androidx.compose.foundation.magnifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -8,20 +7,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavType
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.glazdan.shopperTrackerAndroidApp.data.manager.SessionManager
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.AuthCommand
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.AuthViewModel
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.LoginScreen
-import com.glazdan.shopperTrackerAndroidApp.presentation.screen.start.LoadingScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.RegistrationScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.category.CategoryScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.offline_product.OfflineProductScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.product.ProductScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.product.ProductViewModel
+import com.glazdan.shopperTrackerAndroidApp.presentation.screen.start.LoadingScreen
 import com.glazdan.shopperTrackerAndroidApp.presentation.screen.start.StartScreen
 
 @Composable
@@ -87,7 +86,7 @@ fun NavGraph(
                     }
                 },
                 onBackClick = { navController.popBackStack() },
-                onClcikRegistrationText = { navController.navigate(Screen.Register.route) }
+                onClickRegistrationText = { navController.navigate(Screen.Register.route) }
             )
         }
         composable(Screen.Category.route) {
@@ -110,19 +109,20 @@ fun NavGraph(
 
         composable(
             route = Screen.Product.route,
-            arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+            arguments = listOf(navArgument("categoryId") { type = NavType.IntType },navArgument("categoryTitle"){type =
+                NavType.StringType})
         ) { backStackEntry ->
             val categoryId = backStackEntry.arguments?.getInt("categoryId") ?: 0
+            val categoryTitle = backStackEntry.arguments?.getString("categoryTitle") ?: ""
             val productViewModel: ProductViewModel = hiltViewModel()
 
-            LaunchedEffect(categoryId) {
-                productViewModel.initCategory(categoryId)
+            LaunchedEffect(categoryId, categoryTitle) {
+                productViewModel.initCategory(categoryId, categoryTitle)
             }
 
             ProductScreen(
                 modifier = Modifier,
                 onBackClick = { navController.popBackStack() },
-                onAddUserClick = {},
                 viewModel = productViewModel
             )
         }

@@ -65,7 +65,7 @@ fun CategoryScreen(
                         modifier = modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        title = if(creatingState?.isFormVisible == true) stringResource(R.string.cancel) else stringResource(R.string.add),
+                        title = if(creatingState?.isFormVisible == true) stringResource(R.string.cancel) else stringResource(R.string.add_category),
                         onClick = {viewModel.proccessCommand(CategoryCommand.ToggleFormVisibility)}
 
                     )

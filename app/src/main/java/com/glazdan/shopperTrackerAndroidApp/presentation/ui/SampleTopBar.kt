@@ -61,7 +61,7 @@ fun SampleTopBar(
                 Icon(
                     modifier = Modifier
                         .clip(CircleShape)
-                        .clickable { onAddUserClick?.invoke() }
+                        .clickable { onAddUserClick.invoke() }
                         .padding(8.dp),
                     imageVector = Icons.Filled.PersonAdd,
                     contentDescription = "Add user to category"

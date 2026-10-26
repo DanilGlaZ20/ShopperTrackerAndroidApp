@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.glazdan.shopperTrackerAndroidApp.R
-import com.glazdan.shopperTrackerAndroidApp.presentation.screen.authorization.AuthCommand
-import com.glazdan.shopperTrackerAndroidApp.presentation.screen.category.CategoryState
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.FindUser
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.InputShopCard
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.OutputShopCard
@@ -41,7 +38,6 @@ import com.glazdan.shopperTrackerAndroidApp.presentation.ui.SampleTopBar
 fun ProductScreen(
 	modifier: Modifier = Modifier,
 	onBackClick: () -> Unit,
-	onAddUserClick: () -> Unit,
 	viewModel: ProductViewModel = hiltViewModel()
 ) {
 
@@ -60,10 +56,9 @@ fun ProductScreen(
 			item{
 				SampleTopBar(
 					modifier = Modifier.fillMaxWidth(),
-					text =  stringResource(R.string.shopping_list),
-						//stringResource(R.string.shopping_list),
+					text =  creatingState?.categoryTitle ?: stringResource(R.string.shopping_list),
 					onBackClick = onBackClick,
-					onAddUserClick = {viewModel.proccessCommand(ProductCommand.ToggleInviteDialog(isVisible = true))}
+					onAddUserClick = {viewModel.processCommand(ProductCommand.ToggleInviteDialog(isVisible = true))}
 				)
 
 
@@ -75,8 +70,8 @@ fun ProductScreen(
 					modifier = modifier
 						.fillMaxWidth()
 						.height(50.dp),
-					title = if(creatingState?.isFormVisible == true) stringResource(R.string.cancel) else stringResource(R.string.add),
-					onClick = {viewModel.proccessCommand(ProductCommand.ToggleFormVisibility)}
+					title = if(creatingState?.isFormVisible == true) stringResource(R.string.cancel) else stringResource(R.string.add_product),
+					onClick = {viewModel.processCommand(ProductCommand.ToggleFormVisibility)}
 
 				)
 			}
@@ -93,16 +88,16 @@ fun ProductScreen(
 						queryDescription = creatingState.description,
 						queryBadge = creatingState.shop,
 						buttonText = stringResource(R.string.save),
-						onTextChanged = {viewModel.proccessCommand(ProductCommand.InputTitle(it))},
-						onDescriptionChanged ={viewModel.proccessCommand(ProductCommand.InputDescription(it))},
-						onShopChanged = {viewModel.proccessCommand(ProductCommand.InputShop(it))},
-						onAddItem = {viewModel.proccessCommand(ProductCommand.SaveProduct)}
+						onTextChanged = {viewModel.processCommand(ProductCommand.InputTitle(it))},
+						onDescriptionChanged ={viewModel.processCommand(ProductCommand.InputDescription(it))},
+						onShopChanged = {viewModel.processCommand(ProductCommand.InputShop(it))},
+						onAddItem = {viewModel.processCommand(ProductCommand.SaveProduct)}
 					)
 
 				}
 			}
 
-			if(creatingState?.isLoading == false && creatingState?.productsList?.isEmpty() ==true && creatingState?.isFormVisible ==false)
+			if(creatingState?.isLoading == false && creatingState.productsList.isEmpty() && !creatingState.isFormVisible)
 			{
 				item {
 					Image(
@@ -141,10 +136,10 @@ fun ProductScreen(
 					badgeText = product.productShop,
 					isBought = product.isBought,
 					hasBorder = false,
-					onCheckedClick = { isChecked ->
-						viewModel.proccessCommand(ProductCommand.RemoveProduct(product))
+					onCheckedClick = {
+						viewModel.processCommand(ProductCommand.RemoveProduct(product))
 					},
-					onClick = { viewModel.proccessCommand(ProductCommand.EditProduct(product)) }
+					onClick = { viewModel.processCommand(ProductCommand.EditProduct(product)) }
 				)
 			}
 
@@ -154,13 +149,14 @@ fun ProductScreen(
 		}
 		if (creatingState?.isInviteDialogVisible == true) {
 			FindUser(
-				onDismissRequest = { viewModel.proccessCommand(ProductCommand.ToggleInviteDialog(isVisible = false)) },
-				onConfirmation = { viewModel.proccessCommand(ProductCommand.InviteUser) },
-				dialogText = "Добавить пользователя в катеорию",
-				dialogTitle = "Добавление пользователя",
-				textContent = "номер пользователя",
+				onDismissRequest = { viewModel.processCommand(ProductCommand.ToggleInviteDialog(isVisible = false)) },
+				onConfirmation = { viewModel.processCommand(ProductCommand.InviteUser) },
+				dialogTitle = stringResource(R.string.add_user_to_category),
+				textContent = stringResource(R.string.user_number_phone),
+				makeButton = stringResource(R.string.add),
+				cancelButton = stringResource(R.string.cancel),
 				queryContent = creatingState.phone,
-				onContentChanged = {viewModel.proccessCommand(ProductCommand.InputPhone(it))},
+				onContentChanged = {viewModel.processCommand(ProductCommand.InputPhone(it))},
 				successText = creatingState.isSuccess,
 				errorText = creatingState.isError
 

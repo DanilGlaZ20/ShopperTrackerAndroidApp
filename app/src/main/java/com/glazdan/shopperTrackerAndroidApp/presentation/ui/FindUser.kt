@@ -2,7 +2,6 @@ package com.glazdan.shopperTrackerAndroidApp.presentation.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
@@ -10,8 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.glazdan.shopperTrackerAndroidApp.presentation.ui.theme.Critical
@@ -23,9 +22,10 @@ fun FindUser(
 	onDismissRequest: () -> Unit,
 	onConfirmation: () -> Unit,
 	dialogTitle: String,
-	dialogText: String,
 	textContent: String,
 	queryContent: String,
+	makeButton: String,
+	cancelButton: String,
 	onContentChanged: (String) -> Unit,
 	successText: String? = null,
 	errorText: String? = null
@@ -34,11 +34,15 @@ fun FindUser(
 
 	AlertDialog(
 		title = {
-			Text(text = dialogTitle)
+			Text(
+				text = dialogTitle,
+				fontSize = 24.sp,
+				fontWeight = FontWeight.Bold
+			)
+
 		},
 		text = {
 			Column {
-				Text(text = dialogText)
 				Spacer(modifier = Modifier.height(8.dp))
 				InputContent(
 					modifier = Modifier.fillMaxWidth(),
@@ -79,7 +83,12 @@ fun FindUser(
 					onConfirmation()
 				}
 			) {
-				Text("Confirm")
+				Text(
+					text = makeButton,
+					fontSize = 16.sp,
+					fontWeight = FontWeight.Bold,
+					textAlign = TextAlign.Center
+				)
 			}
 		},
 		dismissButton = {
@@ -88,9 +97,15 @@ fun FindUser(
 					onDismissRequest()
 				}
 			) {
-				Text("Dismiss")
+				Text(
+					text = cancelButton,
+					fontSize = 16.sp,
+					fontWeight = FontWeight.Bold,
+					textAlign = TextAlign.Center
+				)
 			}
 		},
 
 	)
 }
+

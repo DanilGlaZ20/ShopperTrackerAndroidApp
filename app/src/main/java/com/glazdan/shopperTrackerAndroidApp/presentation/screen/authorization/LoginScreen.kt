@@ -36,7 +36,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     onClickLogin: (String) -> Unit,
     onBackClick: () -> Unit,
-    onClcikRegistrationText: () -> Unit,
+    onClickRegistrationText: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsState()
@@ -112,7 +112,7 @@ fun LoginScreen(
                 clickableText = stringResource(R.string.register_button),
                 tag = stringResource(R.string.registration_tag),
                 annotation = stringResource(R.string.click_tag),
-                onClick = onClcikRegistrationText
+                onClick = onClickRegistrationText
 
             )
         }

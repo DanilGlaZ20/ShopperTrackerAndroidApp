@@ -7,7 +7,7 @@ import com.glazdan.shopperTrackerAndroidApp.data.remote.response.BaseResponse
 import com.glazdan.shopperTrackerAndroidApp.data.util.toModel
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Category
 import com.glazdan.shopperTrackerAndroidApp.domaim.repository.CategoryRepository
-import com.project.data.model.responses.AuthResponse
+import com.glazdan.shopperTrackerAndroidApp.data.remote.response.AuthResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException

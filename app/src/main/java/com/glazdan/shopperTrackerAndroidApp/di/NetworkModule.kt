@@ -9,10 +9,8 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.http.URLProtocol
-import io.ktor.http.path
-import kotlinx.serialization.json.Json
 import io.ktor.serialization.kotlinx.json.json
-
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module

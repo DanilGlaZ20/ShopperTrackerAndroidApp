@@ -59,7 +59,7 @@ fun InputShopCard(
 				query = queryDescription,
 				onQueryChanged = onDescriptionChanged
 			)
-			if (badgeText != null && queryBadge != null && onShopChanged != null){
+			if (badgeText != null && queryBadge != null){
 				InputContent(
 					text = badgeText,
 					query = queryBadge,

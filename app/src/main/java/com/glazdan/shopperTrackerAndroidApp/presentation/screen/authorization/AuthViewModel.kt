@@ -30,7 +30,7 @@ class AuthViewModel @Inject constructor(
             AuthCommand.LoginBtnClick -> login()
             AuthCommand.GuestBtnClick -> saveGuest()
 
-            AuthCommand.onBackClick -> {}
+            AuthCommand.OnBackClick -> {}
         }
     }
 
@@ -103,7 +103,7 @@ sealed interface AuthCommand{
     data object LoginBtnClick: AuthCommand
 
     data object GuestBtnClick: AuthCommand
-    data object  onBackClick: AuthCommand
+    data object  OnBackClick: AuthCommand
 }
 
 data class AuthState(

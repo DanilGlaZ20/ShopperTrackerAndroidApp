@@ -17,7 +17,7 @@
     <string name="click_tag">click</string>
     <string name="guest_tag">guest tag</string>
     <string name="cancel">Отмена</string>
-    <string name="add">Добавить товар</string>
+    <string name="add_product">Добавить товар</string>
     <string name="save">Сохранить</string>
 
     <string name="shopping_list">Список покупок</string>
@@ -37,6 +37,10 @@
     <string name="name_category">Название категории</string>
     <string name="delete_element">Удалить элемент</string>
     <string name="add_user_in_category">Add user in category</string>
+    <string name="add_category">Добавить категорию</string>
+    <string name="add_user_to_category">Добавить пользователя в катеорию</string>
+    <string name="user_number_phone">номер телефона пользователя</string>
+    <string name="add">Добавить</string>
 
 
 </resources>

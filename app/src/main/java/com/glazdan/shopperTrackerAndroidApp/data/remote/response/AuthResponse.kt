@@ -1,4 +1,4 @@
-package com.project.data.model.responses
+package com.glazdan.shopperTrackerAndroidApp.data.remote.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

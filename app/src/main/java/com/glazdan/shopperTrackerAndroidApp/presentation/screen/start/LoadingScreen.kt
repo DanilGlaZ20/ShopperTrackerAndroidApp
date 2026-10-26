@@ -16,13 +16,14 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.glazdan.shopperTrackerAndroidApp.R
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun LoadingScreen(
 	onNavigateNext: () -> Unit
 ) {
 	LaunchedEffect(Unit) {
-		delay(2500)
+		delay(2500.milliseconds)
 		onNavigateNext()
 	}
 

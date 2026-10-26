@@ -8,7 +8,6 @@ import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Category
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.OfflineProduct
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.Product
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.User
-import com.glazdan.shopperTrackerAndroidApp.presentation.navigation.Screen
 
 
 fun UserDto.toModel(): User{

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
@@ -88,10 +89,10 @@ class CategoryViewModel @Inject constructor(
 
 		val job = viewModelScope.launch(Dispatchers.IO) {
 			try {
-				delay(3*1000)
+				delay((3*1000).milliseconds)
 				categoryUseCase.removeCategory(categoryId = category.categoryId, token = token )
 				deletionJobs.remove(categoryId)
-			} catch (e: Exception) {
+			} catch (_: Exception) {
 				Log.d("TIMER", "Удаление категории $categoryId отменено")
 			}
 

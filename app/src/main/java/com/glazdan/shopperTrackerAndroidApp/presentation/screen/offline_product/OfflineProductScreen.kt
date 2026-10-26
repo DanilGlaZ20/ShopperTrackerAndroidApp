@@ -63,7 +63,7 @@ fun OfflineProductScreen(
                     modifier = modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    title = if(state.isFormVisible) stringResource(R.string.cancel) else stringResource(R.string.add),
+                    title = if(state.isFormVisible) stringResource(R.string.cancel) else stringResource(R.string.add_product),
                     onClick = {viewModel.processCommand(ProductCommand.ToggleFormVisibility)}
 
                 )
@@ -90,7 +90,7 @@ fun OfflineProductScreen(
                 }
             }
 
-            if(state.isLoading == false && state.productsList.isEmpty() && !state.isFormVisible)
+            if(!state.isLoading && state.productsList.isEmpty() && !state.isFormVisible)
             {
                 item {
                     Image(
@@ -129,7 +129,7 @@ fun OfflineProductScreen(
                     badgeText = product.shop,
                     isBought = product.isBought,
                     hasBorder = false,
-                    onCheckedClick = { isChecked ->
+                    onCheckedClick = {
                         viewModel.processCommand(ProductCommand.RemoveCardProduct(product))
                     },
                     onClick = { viewModel.processCommand(ProductCommand.EditProduct(product)) }

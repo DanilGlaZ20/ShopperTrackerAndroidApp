@@ -14,12 +14,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.Boolean
-import kotlin.String
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
@@ -36,8 +34,10 @@ class ProductViewModel @Inject constructor(
 	private var currentToken: String? = null
 	private var currentCategoryId: Int = 0
 
+	private  var currentCategoryTitle: String = ""
 
-	fun proccessCommand(command: ProductCommand) {
+
+	fun processCommand(command: ProductCommand) {
 		when (command) {
 			is ProductCommand.EditProduct -> editProduct(product = command.product)
 			is ProductCommand.InputDescription -> inputDescription(newDescription = command.description)
@@ -70,15 +70,16 @@ class ProductViewModel @Inject constructor(
 		if (previousState is ProductState.CreatingProduct) previousState.copy(phone = newPhone) else previousState
 	}
 
-	fun initCategory(categoryId: Int) {
+	fun initCategory(categoryId: Int, categoryTitle: String) {
 		currentCategoryId = categoryId
+		currentCategoryTitle = categoryTitle
 		_state.update { prev ->
-			if (prev is ProductState.CreatingProduct) prev.copy(categoryId = categoryId) else prev
+			if (prev is ProductState.CreatingProduct) prev.copy(categoryId = categoryId, categoryTitle =  categoryTitle) else prev
 		}
 		currentToken?.let { loadProduct(token = it, categoryId = categoryId) }
 	}
 
-	private fun editProduct(product: Product) = _state.update { previousState ->
+	private fun editProduct(product: Product): Unit = _state.update { previousState ->
 		val currentState = _state.value as? ProductState.CreatingProduct ?: return
 		val categoryIdFromState = currentState.categoryId ?: currentCategoryId
 		if (previousState is ProductState.CreatingProduct) {
@@ -132,7 +133,7 @@ class ProductViewModel @Inject constructor(
 
 		val job = viewModelScope.launch(Dispatchers.IO) {
 			try {
-				delay(3 * 1000)
+				delay((3 * 1000).milliseconds)
 				productUseCase.removeProduct(
 					productId = product.productId,
 					categoryId = currentCategoryId,
@@ -275,7 +276,7 @@ class ProductViewModel @Inject constructor(
 			)
 
 			result.fold(
-				onSuccess = { baseResponse ->
+				onSuccess = {
 					_state.update { prev ->
 						if (prev is ProductState.CreatingProduct) {
 							prev.copy(
@@ -287,7 +288,7 @@ class ProductViewModel @Inject constructor(
 						} else prev
 					}
 				},
-				onFailure = { exception ->
+				onFailure = {
 					_state.update { prev ->
 						if (prev is ProductState.CreatingProduct) {
 							prev.copy(
@@ -324,6 +325,7 @@ class ProductViewModel @Inject constructor(
 		data class CreatingProduct(
 			val editedId: Long? = null,
 			val categoryId: Int? = null,
+			val categoryTitle: String = "",
 			val title: String = "",
 			val description: String = "",
 			val shop: String = "",

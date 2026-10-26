@@ -5,17 +5,16 @@ import androidx.lifecycle.viewModelScope
 import com.glazdan.shopperTrackerAndroidApp.domaim.entity.OfflineProduct
 import com.glazdan.shopperTrackerAndroidApp.domaim.usecase.OfflineProductUseCase
 import com.glazdan.shopperTrackerAndroidApp.presentation.utils.cancelDelation
+import com.glazdan.shopperTrackerAndroidApp.presentation.utils.deletionJobs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentHashMap
-import com.glazdan.shopperTrackerAndroidApp.presentation.utils.deletionJobs
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 
 @HiltViewModel
@@ -76,7 +75,7 @@ class OfflineProductViewModel @Inject constructor(
     }
 
     private fun savePrduct() {
-        val currentState = _state.value ?: return
+        val currentState = _state.value
         val currentTitle = currentState.title
         if (currentTitle.isBlank()) return
 
@@ -121,7 +120,8 @@ class OfflineProductViewModel @Inject constructor(
         val job = viewModelScope.launch(Dispatchers.IO) {
             offlineProductUseCase.editProduct(offlineProduct.copy(isBought = true))
             delay(//3 * 60 *
-                    1000)//отложенное удаление 3 минуты
+                1000.milliseconds
+            )//отложенное удаление 3 минуты
             offlineProductUseCase.deleteProduct(offlineProduct.id)
             deletionJobs.remove(offlineProduct.id)
         }
